@@ -1,6 +1,6 @@
 {
   "name": "my_project",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "crystal <18155376989@163.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -18,7 +18,7 @@
     "electron": "webpack && electron .",
     "packager": "webpack && electron-packager . --platform=linux --electron-version=1.6.6  --overwrite"
   },
-  "repository": "https://github.com/crystal-daisy/agriculture.git",
+  "repository": "https://github.com/crystal-daisy/agriculture",
   "build": {
     "productName": "my_project",
     "appId": "com.example.yourapp",
@@ -26,13 +26,13 @@
       "output": "build"
     },
     "publish": {
-      "provider": "github",
+      "provider": "generic",
       "repo": "agriculture",
       "owner": "crystal-daisy",
       "token": "7014ea122c52d58bb4c1711af0e6697a6e08af2e",
       "releaseType": "release",
       "publishAutoUpdate": true,
-      "url": "https://github.com/crystal-daisy/agriculture/releases/download/0.0.3/"
+      "url": "https://github.com/crystal-daisy/agriculture"
     },
     "files": [
       "dist/electron/**/*"

@@ -73,8 +73,7 @@ function createWindow () {
 let win
 autoUpdater.setFeedURL({
   provider: 'github',
-  // url: 'https://api.github.com/repos/crystal-daisy/agriculture/releases/latest' // git仓库
-  url: 'https://github.com/crystal-daisy/agriculture/releases/download/0.0.3/'
+  url: 'https://github.com/crystal-daisy/agriculture'
 })
 autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()

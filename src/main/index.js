@@ -21,9 +21,9 @@ app.on('ready', () => {
   createWindow();
   // if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
   // 运行APP检测更新。
-  setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, 60000)
+  // setInterval(() => {
+  //   autoUpdater.checkForUpdates()
+  // }, 60000)
 })
 
 app.on('window-all-closed', () => {
@@ -73,7 +73,8 @@ function createWindow () {
 let win
 autoUpdater.setFeedURL({
   provider: 'github',
-  url: 'https://github.com/crystal-daisy/agriculture.git' // git仓库
+  // url: 'https://api.github.com/repos/crystal-daisy/agriculture/releases/latest' // git仓库
+  url: 'https://github.com/crystal-daisy/agriculture/releases/download/0.0.3/'
 })
 autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()
@@ -83,6 +84,12 @@ autoUpdater.on('update-downloaded', () => {
 app.allowRendererProcessReuse = true // allowRendererProcessReuse 警告处理
 autoUpdater.autoDownload = false // 关闭自动更新
 autoUpdater.autoInstallOnAppQuit = true // APP退出的时候自动安装
+
+if (process.env.NODE_ENV === 'development') {
+  autoUpdater.updateConfigPath = path.join(__dirname, 'default-app-update.yml')
+} else {
+  autoUpdater.updateConfigPath = path.join(__dirname, '../../../app-update.yml')
+}
 
 autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...')

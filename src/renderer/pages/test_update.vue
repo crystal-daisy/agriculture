@@ -30,67 +30,63 @@ export default {
     }
   },
   created() {
-    // 仅在Electron模式下
-    console.log(process.env.IS_ELECTRON)
-    if (process.env.IS_ELECTRON) {
-      const { ipcRenderer } = require('electron')
+    const { ipcRenderer } = require('electron')
 
-      // 发现新版本
-      ipcRenderer.once('autoUpdater-canUpdate', (event, info) => {
+    // 发现新版本
+    ipcRenderer.once('autoUpdater-canUpdate', (event, info) => {
         console.log(event)
         setTimeout(() => {
-          this.$confirm(`发现有新版本【v${info.version}】，是否更新?`, '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-            closeOnClickModal: false
-          }).then(() => {
-            ipcRenderer.send('autoUpdater-toDownload')
-          })
+            this.$confirm(`发现有新版本【v${info.version}】，是否更新?`, '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+                closeOnClickModal: false
+            }).then(() => {
+                ipcRenderer.send('autoUpdater-toDownload')
+            })
         }, 500)
-      })
-      // 下载进度
-      ipcRenderer.on('autoUpdater-progress', (event, process) => {
+    })
+    // 下载进度
+    ipcRenderer.on('autoUpdater-progress', (event, process) => {
         console.log(event)
         if (process.transferred >= 1024 * 1024) {
-          process.transferred = (process.transferred / 1024 / 1024).toFixed(2) + 'M'
+            process.transferred = (process.transferred / 1024 / 1024).toFixed(2) + 'M'
         } else {
-          process.transferred = (process.transferred / 1024).toFixed(2) + 'K'
+            process.transferred = (process.transferred / 1024).toFixed(2) + 'K'
         }
         if (process.total >= 1024 * 1024) {
-          process.total = (process.total / 1024 / 1024).toFixed(2) + 'M'
+            process.total = (process.total / 1024 / 1024).toFixed(2) + 'M'
         } else {
-          process.total = (process.total / 1024).toFixed(2) + 'K'
+            process.total = (process.total / 1024).toFixed(2) + 'K'
         }
         if (process.bytesPerSecond >= 1024 * 1024) {
-          process.speed = (process.bytesPerSecond / 1024 / 1024).toFixed(2) + 'M/s'
+            process.speed = (process.bytesPerSecond / 1024 / 1024).toFixed(2) + 'M/s'
         } else if (process.bytesPerSecond >= 1024) {
-          process.speed = (process.bytesPerSecond / 1024).toFixed(2) + 'K/s'
+            process.speed = (process.bytesPerSecond / 1024).toFixed(2) + 'K/s'
         } else {
-          process.speed = process.bytesPerSecond + 'B/s'
+            process.speed = process.bytesPerSecond + 'B/s'
         }
         process.percent = process.percent.toFixed(2)
         this.downloadProcess = process
         this.showUpdater = true
-      })
-      // 下载更新失败
-      ipcRenderer.once('autoUpdater-error', (event) => {
+    })
+    // 下载更新失败
+    ipcRenderer.once('autoUpdater-error', (event) => {
         console.log(event)
         this.$message.error('更新失败！')
         this.showUpdater = false
-      })
-      // 下载完成
-      ipcRenderer.once('autoUpdater-downloaded', () => {
+    })
+    // 下载完成
+    ipcRenderer.once('autoUpdater-downloaded', () => {
         this.$confirm(`更新完成，是否关闭应用程序安装新版本?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          closeOnClickModal: false
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            closeOnClickModal: false
         }).then(() => {
-          ipcRenderer.send('exit-app')
+            ipcRenderer.send('exit-app')
         })
-      })
-    }
+    })
   },
 }
 </script>

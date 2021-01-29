@@ -2,6 +2,9 @@
   <div id="app">
     <router-view></router-view>
     <test_update></test_update>
+    <div>
+      版本号   {{releaseNote}}
+    </div>
   </div>
 </template>
 
@@ -11,7 +14,7 @@ export default {
   name: 'App',
   data() {
     return {
-      
+      releaseNote:"0.0.2"
     }
   },
   components:{

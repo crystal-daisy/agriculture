@@ -21,7 +21,9 @@ app.on('ready', () => {
   createWindow();
   // if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
   // 运行APP检测更新。
-  autoUpdater.checkForUpdates()
+  setInterval(() => {
+    autoUpdater.checkForUpdates()
+  }, 60000)
 })
 
 app.on('window-all-closed', () => {
@@ -69,6 +71,10 @@ function createWindow () {
  // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let win
+autoUpdater.setFeedURL({
+  provider: 'github',
+  url: 'https://github.com/crystal-daisy/agriculture.git' // git仓库
+})
 autoUpdater.on('update-downloaded', () => {
   autoUpdater.quitAndInstall()
 })

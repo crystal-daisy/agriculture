@@ -16,12 +16,10 @@
         <div class="button">
             <button></button>
         </div>
-        <test_update></test_update>
     </div>
 </template>
 
 <script>
-    import test_update from "./test_update";
     export default{
         name: 'login',
         data(){
@@ -31,10 +29,7 @@
         },
         methods: {
             
-        },
-        components:[
-            test_update
-        ]
+        }
     }
 </script>
 

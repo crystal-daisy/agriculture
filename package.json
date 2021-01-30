@@ -1,6 +1,6 @@
 {
   "name": "my_project",
-  "version": "0.0.2",
+  "version": "1.0.1",
   "author": "crystal <18155376989@163.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -13,12 +13,8 @@
     "dev": "node .electron-vue/dev-runner.js",
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
-    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "postinstall": "",
-    "electron": "webpack && electron .",
-    "packager": "webpack && electron-packager . --platform=linux --electron-version=1.6.6  --overwrite"
+    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js"
   },
-  "repository": "https://github.com/crystal-daisy/agriculture",
   "build": {
     "productName": "my_project",
     "appId": "com.example.yourapp",
@@ -27,12 +23,7 @@
     },
     "publish": {
       "provider": "generic",
-      "repo": "agriculture",
-      "owner": "crystal-daisy",
-      "token": "7014ea122c52d58bb4c1711af0e6697a6e08af2e",
-      "releaseType": "release",
-      "publishAutoUpdate": true,
-      "url": "https://github.com/crystal-daisy/agriculture"
+      "url": "http://39.105.78.201/html/yu"
     },
     "files": [
       "dist/electron/**/*"
@@ -64,9 +55,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "electron-packager": "^15.2.0",
     "electron-updater": "^4.3.5",
     "element-ui": "^2.15.0",
+    "postgresql": "0.0.1",
     "vue": "^2.5.16",
     "vue-electron": "^1.0.6",
     "vue-router": "^3.5.1",
@@ -77,11 +68,11 @@
     "ajv": "^6.5.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.4",
+    "babel-minify-webpack-plugin": "^0.3.1",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
     "babel-register": "^6.26.0",
-    "babel-minify-webpack-plugin": "^0.3.1",
     "cfonts": "^2.1.2",
     "chalk": "^2.4.1",
     "copy-webpack-plugin": "^4.5.1",
@@ -90,12 +81,12 @@
     "del": "^3.0.0",
     "devtron": "^1.4.0",
     "electron": "^4.0.0",
+    "electron-builder": "^20.19.2",
     "electron-debug": "^1.5.0",
     "electron-devtools-installer": "^2.2.4",
-    "electron-builder": "^20.19.2",
-    "mini-css-extract-plugin": "0.4.0",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "0.4.0",
     "multispinner": "^0.2.1",
     "node-loader": "^0.6.0",
     "node-sass": "^4.9.2",
@@ -106,8 +97,8 @@
     "vue-loader": "^15.2.4",
     "vue-style-loader": "^4.1.0",
     "vue-template-compiler": "^2.5.16",
-    "webpack-cli": "^3.0.8",
     "webpack": "^4.15.1",
+    "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4",
     "webpack-hot-middleware": "^2.22.2",
     "webpack-merge": "^4.1.3"

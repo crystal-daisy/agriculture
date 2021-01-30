@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-
     <el-dialog
       title="应用更新......"
       :visible="showUpdater"
@@ -26,7 +25,7 @@ export default {
   data() {
     return {
       showUpdater: false,
-      downloadProcess: null,
+      downloadProcess: null
     }
   },
   created() {

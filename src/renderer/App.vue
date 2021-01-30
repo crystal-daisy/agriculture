@@ -14,7 +14,7 @@ export default {
   name: 'App',
   data() {
     return {
-      releaseNote:"1.0.1"
+      releaseNote:"0.0.0"
     }
   },
   components:{

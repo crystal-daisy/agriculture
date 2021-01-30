@@ -1,6 +1,6 @@
 {
   "name": "my_project",
-  "version": "1.0.1",
+  "version": "0.0.0",
   "author": "crystal <18155376989@163.com>",
   "description": "An electron-vue project",
   "license": null,
@@ -55,6 +55,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "electron-packager": "^15.2.0",
     "electron-updater": "^4.3.5",
     "element-ui": "^2.15.0",
     "postgresql": "0.0.1",

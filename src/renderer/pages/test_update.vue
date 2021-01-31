@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="update_now">
     <el-dialog
       title="应用更新......"
       :visible="showUpdater"
@@ -19,9 +19,9 @@
 </template>
 
 <script>
-
+import { ipcRenderer } from 'electron'
 export default {
-  name: 'App',
+  name: 'update_now',
   data() {
     return {
       showUpdater: false,
@@ -29,11 +29,15 @@ export default {
     }
   },
   created() {
-    const { ipcRenderer } = require('electron')
 
+	console.log("hello world miao")
+
+	ipcRenderer.send("checkForUpdate");
+	
+	
     // 发现新版本
-    ipcRenderer.once('autoUpdater-canUpdate', (event, info) => {
-        console.log(event)
+    ipcRenderer.on('updateAvailable', (event, info) => {
+        console.log("更新吗亲？？？")
         setTimeout(() => {
             this.$confirm(`发现有新版本【v${info.version}】，是否更新?`, '提示', {
                 confirmButtonText: '确定',
@@ -46,7 +50,8 @@ export default {
         }, 500)
     })
     // 下载进度
-    ipcRenderer.on('autoUpdater-progress', (event, process) => {
+    ipcRenderer.on('downloadProgress', (event, process) => {
+		console.log("下载呢…… ")
         console.log(event)
         if (process.transferred >= 1024 * 1024) {
             process.transferred = (process.transferred / 1024 / 1024).toFixed(2) + 'M'
@@ -65,18 +70,18 @@ export default {
         } else {
             process.speed = process.bytesPerSecond + 'B/s'
         }
-        process.percent = process.percent.toFixed(2)
+        process.percent = parseInt(process.percent.toFixed(2));
         this.downloadProcess = process
         this.showUpdater = true
     })
     // 下载更新失败
-    ipcRenderer.once('autoUpdater-error', (event) => {
-        console.log(event)
-        this.$message.error('更新失败！')
-        this.showUpdater = false
+    ipcRenderer.on('update-error', (event) => {
+        console.log(event);
+        console.log('更新失败！');
+        this.showUpdater = false;
     })
     // 下载完成
-    ipcRenderer.once('autoUpdater-downloaded', () => {
+    ipcRenderer.on('autoUpdater-downloaded', () => {
         this.$confirm(`更新完成，是否关闭应用程序安装新版本?`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -86,7 +91,7 @@ export default {
             ipcRenderer.send('exit-app')
         })
     })
-  },
+  }
 }
 </script>
 

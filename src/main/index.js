@@ -1,6 +1,7 @@
 import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import path from 'path'
+import packageJson from '../../package.json'
 
 /**
  * Set `__static` path to static files in production
@@ -19,18 +20,31 @@ const winURL = process.env.NODE_ENV === 'development'
 app.on('ready', () => {
 
   createWindow();
+
   // if (process.env.NODE_ENV === 'production') autoUpdater.checkForUpdates()
   // 运行APP检测更新。
-  setInterval(() => {
-    autoUpdater.checkForUpdates()
-  }, 60000)
+  checkUpdate();
 })
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
+// 检查更新版本
+function checkUpdate() {
+  // 执行更新检查
+  autoUpdater.currentVersion = packageJson.version;
+  sendUpdateMessage(packageJson.version)
+  autoUpdater.setFeedURL({
+    provider: 'generic',
+    url: 'http://localhost:9080/downloads/'
+  })
+  
+  autoUpdater.checkForUpdates();
+}
+
+
+//app.on('window-all-closed', () => {
+  //if (process.platform !== 'darwin') {
+    //app.quit()
+  //}
+//})
 
 app.on('activate', () => {
   if (mainWindow === null) {
@@ -57,68 +71,61 @@ function createWindow () {
   mainWindow.on('closed', () => {
     mainWindow = null
   })
+  updateHandle();
+}
+
+function updateHandle(){
+	const os = require('os');
+	
+	app.allowRendererProcessReuse = true // allowRendererProcessReuse 警告处理
+	autoUpdater.autoDownload = false // 关闭自动更新
+
+	//if (process.env.NODE_ENV === 'development') {
+	  //autoUpdater.updateConfigPath = path.join(__dirname, 'default-app-update.yml')
+	//} else {
+	  //autoUpdater.updateConfigPath = path.join(__dirname, '../../../app-update.yml')
+	//}
+	autoUpdater.updateConfigPath = path.join(__dirname, '../../build/win-unpacked/resources/app-update.yml')
+	autoUpdater.on('error', function (error) {     
+		sendUpdateMessage('检查更新出错');
+		mainWindow.webContents.send('update-error')
+	})     
+	autoUpdater.on('checking-for-update', function () {
+		sendUpdateMessage('正在检查更新……')		
+		//mainWindow.webContents.send('checking-for-update') 
+	})      
+	autoUpdater.on('update-available', function (info) {
+		mainWindow.webContents.send('updateAvailable',info); 
+		sendUpdateMessage('检测到新版本,问下要不要下载'); 
+	})   
+	autoUpdater.on('update-not-available', function (info) {
+		sendUpdateMessage('现在使用的就是最新版本，不用更新')    
+	})    
+	// 更新下载进度事件
+	autoUpdater.on('download-progress', function (progressObj) {
+		console.log("download-progress----------------------------")     
+		mainWindow.webContents.send('downloadProgress', progressObj)    
+	})   
+	// 下载完成   
+	autoUpdater.on('update-downloaded', function (event, releaseNotes, releaseName, releaseDate, updateUrl, quitAndUpdate) { 
+		mainWindow.webContents.send('autoUpdater-downloaded');
+		ipcMain.on('exit-app', (e, arg) => {
+			autoUpdater.quitAndInstall()     
+		});         
+		sendUpdateMessage('----- 开始更新 isUpdateNow----')    
+	});      
+	ipcMain.on("checkForUpdate",()=>{
+		//执行自动更新检查         
+		console.log("执行自动更新检查checked~~~")     
+		checkUpdate();
+	}) 
+	ipcMain.on('autoUpdater-toDownload',()=>{
+		autoUpdater.downloadUpdate()
+	})
+} 
+// 通过main进程发送事件给renderer进程，提示更新信息. 
+function sendUpdateMessage(text) {
+	console.log(text);
 }
 
 
-/**
- * Auto Updater
- *
- * Uncomment the following code below and install `electron-updater` to
- * support auto updating. Code Signing with a valid certificate is required.
- * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-electron-builder.html#auto-updating
- */
-
- // Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
-let win
-autoUpdater.setFeedURL({
-  provider: 'generic',
-  url: 'http://39.105.78.201/html/yu'
-})
-autoUpdater.on('update-downloaded', () => {
-  autoUpdater.quitAndInstall()
-})
-
-
-app.allowRendererProcessReuse = true // allowRendererProcessReuse 警告处理
-autoUpdater.autoDownload = false // 关闭自动更新
-autoUpdater.autoInstallOnAppQuit = true // APP退出的时候自动安装
-
-if (process.env.NODE_ENV === 'development') {
-  autoUpdater.updateConfigPath = path.join(__dirname, 'default-app-update.yml')
-} else {
-  autoUpdater.updateConfigPath = path.join(__dirname, '../../../app-update.yml')
-}
-
-autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...')
-})
-autoUpdater.on('update-available', (info) => {
-  // 可以更新版本
-  sendStatusToWindow('autoUpdater-canUpdate', info)
-})
-autoUpdater.on('error', (err) => {
-  // 更新错误
-  sendStatusToWindow('autoUpdater-error', err)
-})
-// 发起更新程序
-ipcMain.on('autoUpdater-toDownload', () => {
-  autoUpdater.downloadUpdate()
-})
-autoUpdater.on('download-progress', (progressObj) => {
-  // 正在下载的下载进度
-  sendStatusToWindow('autoUpdater-progress', progressObj)
-})
-autoUpdater.on('update-downloaded', (info) => {
-  // 下载完成
-  sendStatusToWindow('autoUpdater-downloaded')
-})
-// 退出程序
-ipcMain.on('exit-app', () => {
-  autoUpdater.quitAndInstall()
-})
-
-// 发送消息给渲染线程
-function sendStatusToWindow(status, params) {
-  win.webContents.send(status, params)
-}
